@@ -48,6 +48,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,8 +61,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private static final int UART_PROFILE_CONNECTED = 20;
     private static final int UART_PROFILE_DISCONNECTED = 21;
     private static final int STATE_OFF = 10;
-    private static final String LED2OFF = "led2 off";
-    private static final String LED2ON = "led2 on";
+    private static final String LED2OFF = "led2 0.0";
+    private static final String LED2ON = "led2 1.0";
 
 
     TextView mRemoteRssiVal;
@@ -74,6 +75,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private ArrayAdapter<String> listAdapter;
     private Button btnConnectDisconnect,btnSend;
     private Switch Led2SwitchToggle;
+    private SeekBar Led2LevelChange;
     private EditText edtMessage;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         btnConnectDisconnect=(Button) findViewById(R.id.btn_select);
         btnSend=(Button) findViewById(R.id.sendButton);
         Led2SwitchToggle=(Switch) findViewById(R.id.led2Switch);
+        Led2LevelChange=(SeekBar) findViewById(R.id.LedLevel);
         edtMessage = (EditText) findViewById(R.id.sendText);
         service_init();
 
@@ -156,9 +159,53 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 try {
                     if (isChecked) {
                         value = LED2ON.getBytes("UTF-8");    // The switch is on
+                        Led2LevelChange.setProgress(100);
                     } else {
                         value = LED2OFF.getBytes("UTF-8");     // The switch is off
+                        Led2LevelChange.setProgress(0);
                     }
+                    mService.writeRXCharacteristic(value);
+                } catch (UnsupportedEncodingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // Handler LED Level
+
+        Led2LevelChange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progress = 0;
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
+                if (Math.abs(progressValue-progress) > 10) {
+                    progress = progressValue;
+                    byte[] value;
+                    try {
+                        String cmdString = "led2 " + progress / 100.0;
+                        value = cmdString.getBytes("UTF-8");
+                        mService.writeRXCharacteristic(value);
+                    } catch (UnsupportedEncodingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Do something here,
+                //if you want to do anything at the start of
+                // touching the seekbar
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Display the value in textview
+                byte[] value;
+                try {
+                    String cmdString = "led2 " + seekBar.getProgress()/100.0;
+                    value = cmdString.getBytes("UTF-8");
                     mService.writeRXCharacteristic(value);
                 } catch (UnsupportedEncodingException e) {
                     // TODO Auto-generated catch block
