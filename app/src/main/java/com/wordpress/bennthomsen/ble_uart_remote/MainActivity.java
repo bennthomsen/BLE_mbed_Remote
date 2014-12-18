@@ -178,7 +178,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             int progress = 0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                if (Math.abs(progressValue-progress) > 10) {
+                if (Math.abs(progressValue-progress) > 5) {
                     progress = progressValue;
                     byte[] value;
                     try {
