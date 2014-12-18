@@ -94,7 +94,7 @@
         android:layout_width="209dp"
         android:layout_height="wrap_content"
         android:id="@+id/LedLevel"
-        android:max="100"
+        android:max="20"
         android:progress="0"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />

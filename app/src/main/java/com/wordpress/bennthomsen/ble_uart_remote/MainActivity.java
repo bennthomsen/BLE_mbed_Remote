@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private static final int STATE_OFF = 10;
     private static final String LED2OFF = "led2 0.0";
     private static final String LED2ON = "led2 1.0";
+    private static final double SLIDER_MAX = 20.0;
 
 
     TextView mRemoteRssiVal;
@@ -159,7 +160,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 try {
                     if (isChecked) {
                         value = LED2ON.getBytes("UTF-8");    // The switch is on
-                        Led2LevelChange.setProgress(100);
+                        Led2LevelChange.setProgress((int) SLIDER_MAX);
                     } else {
                         value = LED2OFF.getBytes("UTF-8");     // The switch is off
                         Led2LevelChange.setProgress(0);
@@ -178,11 +179,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             int progress = 0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progressValue, boolean fromUser) {
-                if (Math.abs(progressValue-progress) > 5) {
+                if (progressValue != progress) {
                     progress = progressValue;
                     byte[] value;
                     try {
-                        String cmdString = "led2 " + progress / 100.0;
+                        String cmdString = "led2 " + progress / SLIDER_MAX;
                         value = cmdString.getBytes("UTF-8");
                         mService.writeRXCharacteristic(value);
                     } catch (UnsupportedEncodingException e) {
@@ -204,7 +205,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 // Display the value in textview
                 byte[] value;
                 try {
-                    String cmdString = "led2 " + seekBar.getProgress()/100.0;
+                    String cmdString = "led2 " + seekBar.getProgress() / SLIDER_MAX;
                     value = cmdString.getBytes("UTF-8");
                     mService.writeRXCharacteristic(value);
                 } catch (UnsupportedEncodingException e) {
