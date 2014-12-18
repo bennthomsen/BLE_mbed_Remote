@@ -97,6 +97,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         Led2SwitchToggle=(Switch) findViewById(R.id.led2Switch);
         Led2LevelChange=(SeekBar) findViewById(R.id.LedLevel);
         edtMessage = (EditText) findViewById(R.id.sendText);
+        Led2LevelChange.setEnabled(false);                    // Programmtically Disable slider (Setting in main.xml does not work
         service_init();
 
 
@@ -252,7 +253,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             String action = intent.getAction();
 
             final Intent mIntent = intent;
-            //*********************//
+            //*******Service Connected**************//
             if (action.equals(UartService.ACTION_GATT_CONNECTED)) {
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -261,6 +262,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                         btnConnectDisconnect.setText("Disconnect");
                         edtMessage.setEnabled(true);
                         btnSend.setEnabled(true);
+                        Led2LevelChange.setEnabled(true);
+                        Led2SwitchToggle.setEnabled(true);
                         ((TextView) findViewById(R.id.deviceName)).setText(mDevice.getName()+ " - ready");
                         listAdapter.add("["+currentDateTimeString+"] Connected to: "+ mDevice.getName());
                         messageListView.smoothScrollToPosition(listAdapter.getCount() - 1);
@@ -269,7 +272,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 });
             }
 
-            //*********************//
+            //*********Service Disconnected************//
             if (action.equals(UartService.ACTION_GATT_DISCONNECTED)) {
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -278,6 +281,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                         btnConnectDisconnect.setText("Connect");
                         edtMessage.setEnabled(false);
                         btnSend.setEnabled(false);
+                        Led2LevelChange.setEnabled(false);
+                        Led2SwitchToggle.setEnabled(false);
                         ((TextView) findViewById(R.id.deviceName)).setText("Not Connected");
                         listAdapter.add("["+currentDateTimeString+"] Disconnected to: "+ mDevice.getName());
                         mState = UART_PROFILE_DISCONNECTED;

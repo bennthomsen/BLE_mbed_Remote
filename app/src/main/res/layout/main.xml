@@ -82,22 +82,25 @@
             android:layout_height="36dp"
             android:orientation="vertical" >
 
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LED2"
-        android:id="@+id/led2Switch"
-        android:checked="false"
-        android:layout_gravity="right" />
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LED2"
+                android:id="@+id/led2Switch"
+                android:checked="false"
+                android:layout_gravity="right"
+                android:enabled="false"/>
 
-    <SeekBar
-        android:layout_width="209dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/LedLevel"
-        android:max="20"
-        android:progress="0"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+            <SeekBar
+                android:layout_width="209dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/LedLevel"
+                android:max="20"
+                android:progress="0"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:enabled="false"/>
+
         </RelativeLayout>
     </LinearLayout>
 
